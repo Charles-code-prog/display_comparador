@@ -23,28 +23,20 @@ def match_keypoints(descriptors1, descriptors2):
     matches = sorted(matches, key=lambda x: x.distance)
     return matches
 
-def calculate_distances(matches, keypoints1, keypoints2):
-    distances_img1 = []
-    distances_img2 = []
+def calculate_matching_percentage(matches, keypoints1, keypoints2):
+    # Calcula a porcentagem de correspondências válidas
+    num_keypoints1 = len(keypoints1)
+    num_keypoints2 = len(keypoints2)
+    num_matches = len(matches)
     
-    for match in matches:
-        # Obtem os keypoints correspondentes
-        kp1 = keypoints1[match.queryIdx].pt
-        kp2 = keypoints2[match.trainIdx].pt
-        
-        # Calcula a distância euclidiana entre os keypoints
-        distance = np.linalg.norm(np.array(kp1) - np.array(kp2))
-        
-        # Adiciona as distâncias às listas
-        distances_img1.append(distance)
-        distances_img2.append(distance)
-    
-    return distances_img1, distances_img2
+    # A porcentagem de correspondência é a razão entre o número de correspondências e o menor número de keypoints
+    matching_percentage = (num_matches / min(num_keypoints1, num_keypoints2)) * 100
+    return matching_percentage
 
 def main():
     # Carregar as imagens
-    img1 = cv2.imread('imagem_capturada1.jpg')
-    img2 = cv2.imread('rotate.jpg')
+    img1 = cv2.imread('samples/processado_r.jpg')
+    img2 = cv2.imread('samples/processado.jpg')
     
     # Detectar e computar os keypoints e descritores
     keypoints1, descriptors1 = detect_and_compute(img1)
@@ -53,12 +45,11 @@ def main():
     # Realizar a correspondência dos keypoints
     matches = match_keypoints(descriptors1, descriptors2)
     
-    # Calcular as distâncias entre os keypoints correspondentes
-    distances_img1, distances_img2 = calculate_distances(matches, keypoints1, keypoints2)
+    # Calcular a porcentagem de correspondência
+    matching_percentage = calculate_matching_percentage(matches, keypoints1, keypoints2)
     
-    # Imprimir as distâncias
-    print("Distâncias entre keypoints na imagem 1:", distances_img1)
-    print("Distâncias entre keypoints na imagem 2:", distances_img2)
+    # Imprimir a porcentagem de correspondência
+    print(f"Porcentagem de correspondência: {matching_percentage:.2f}%")
     
     # Exibir as imagens com correspondências
     matched_image = cv2.drawMatches(img1, keypoints1, img2, keypoints2, matches[:10], None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)

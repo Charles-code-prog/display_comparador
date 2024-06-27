@@ -18,7 +18,7 @@ def crop_img(img):
     return img 
 
 # Carregar as imagens
-imagem1, imagem2 = cv2.imread('samples/imagem_capturada1.jpg'), cv2.imread('samples/contraste.jpg')
+imagem1, imagem2 = cv2.imread('samples/imagem_capturada1.jpg'), cv2.imread('samples/processado.jpg')
 
 
 def rotate_image(image, angle):
@@ -32,7 +32,7 @@ def rotate_image(image, angle):
     rotated = cv2.warpAffine(image, M, (w, h))
     return rotated
     
-imagem1 = rotate_image(imagem1, 1)
+imagem1 = rotate_image(imagem1, -15)
 
 #imagem1, imagem2 = resize_image(imagem1), resize_image(imagem2) 
 
@@ -46,7 +46,7 @@ preprocessor = PreProcess(imagem1, imagem2, 6.0, 6.0)
 preprocessor.process_images()
 
 # Exibir as imagens e as métricas de similaridade
-preprocessor.display_images(1)
+preprocessor.display_images(0) # 0: não mostra imagem ; 1: mostra a comparação
 
 fim = time.time()
 print(f"Tempo de execução: {fim - inicio} segundos")
